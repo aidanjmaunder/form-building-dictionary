@@ -5,6 +5,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
 import Autocomplete from "@material-ui/lab/Autocomplete";
+import { createFilterOptions } from '@material-ui/lab/Autocomplete';
 
 /* import local data */
 import dictionary from "./data/dictionary.json";
@@ -23,8 +24,8 @@ const useStyles = makeStyles({
         "0px 2px 4px -1px rgba(0,0,0,0.2), 0px 4px 5px 0px rgba(0,0,0,0.14), 0px 1px 10px 0px rgba(0,0,0,0.12)",
     },
     "& .MuiSvgIcon-root": {
-      color: "#fff"
-    }
+      color: "#fff",
+    },
   },
 });
 const textStyles = makeStyles({
@@ -55,6 +56,12 @@ export default function AutoDictionary() {
   /* state controllers */
   const [inputValue, setInputValue] = useState("");
 
+  /* filter options */
+  const filterOptions = createFilterOptions({
+    matchFrom: 'any',
+    trim: 'true'
+  });
+
   return (
     <div style={{ display: "flex" }}>
       <Autocomplete
@@ -63,15 +70,21 @@ export default function AutoDictionary() {
         onInputChange={(event, newInputValue) => {
           setInputValue(newInputValue);
         }}
-        disableClearable
-        forcePopupIcon={true}
+        /* filter options */
+        filterOptions={filterOptions}
+        /* identity */
         id='combo-box'
         classes={classes}
+        /* general config */
+        disableClearable
+        forcePopupIcon={true}
         options={options.sort(
           (a, b) => -b.firstLetter.localeCompare(a.firstLetter)
         )}
         groupBy={(option) => option.firstLetter}
-        getOptionSelected={(option, inputValue) => option.Fieldname === inputValue.Fieldname}
+        getOptionSelected={(option, inputValue) =>
+          option.Fieldname === inputValue.Fieldname
+        }
         getOptionLabel={(option) => option.Fieldname}
         style={{ width: 500 }}
         renderInput={(params) => (

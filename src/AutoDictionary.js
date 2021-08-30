@@ -1,14 +1,15 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 /* material ui imports */
 import { makeStyles } from "@material-ui/core/styles";
 import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
 import Autocomplete from "@material-ui/lab/Autocomplete";
-import { createFilterOptions } from '@material-ui/lab/Autocomplete';
+import { createFilterOptions } from "@material-ui/lab/Autocomplete";
 
-/* import local data */
-import dictionary from "./data/dictionary.json";
+/* toastify imports */
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 /* styling */
 const useStyles = makeStyles({
@@ -39,7 +40,33 @@ const textStyles = makeStyles({
   },
 });
 
+/* toast function */
+const notify = () => toast("Copied to clipboard");
+
+/* dictionary component */
 export default function AutoDictionary() {
+  const [dictionary, setDictionary] = useState([]);
+
+  /* fetch local data */
+  const getData = () => {
+    fetch("data/dictionary.json", {
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+    })
+      .then(function (response) {
+        return response.json();
+      })
+      .then(function (myJson) {
+        setDictionary(myJson);
+      });
+  };
+
+  useEffect(() => {
+    getData();
+  }, []);
+
   /* bring in custom styles*/
   const classes = useStyles();
   const textClasses = textStyles();
@@ -58,8 +85,8 @@ export default function AutoDictionary() {
 
   /* filter options */
   const filterOptions = createFilterOptions({
-    matchFrom: 'any',
-    trim: 'true'
+    matchFrom: "any",
+    trim: "true",
   });
 
   return (
@@ -68,7 +95,9 @@ export default function AutoDictionary() {
         /* get value on input change for copy to clipboard function */
         inputValue={inputValue}
         onInputChange={(event, newInputValue) => {
+          navigator.clipboard.writeText(newInputValue);
           setInputValue(newInputValue);
+          notify();
         }}
         /* filter options */
         filterOptions={filterOptions}
@@ -106,6 +135,17 @@ export default function AutoDictionary() {
         <i className='far fa-copy'></i>
         &nbsp; Copy
       </Button>
+      <ToastContainer
+        position='top-center'
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+      />
     </div>
   );
 }

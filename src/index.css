@@ -32,7 +32,17 @@ code {
 .Toastify {
   font-size: 1rem;
 }
-
+.Toastify__toast-container {
+  width: auto !important;
+}
 .Toastify__progress-bar {
   background: #6d91d9 !important;
 }
+.Toastify .copiedItem {
+  margin: initial .8rem;
+  padding: .2rem .4rem;
+  color: #fff;
+  background: #6d91d9;
+  border-radius: .2rem;
+}
+

@@ -40,9 +40,6 @@ const textStyles = makeStyles({
   },
 });
 
-/* toast function */
-const notify = () => toast("Copied to clipboard");
-
 /* dictionary component */
 export default function AutoDictionary() {
   const [dictionary, setDictionary] = useState([]);
@@ -83,6 +80,17 @@ export default function AutoDictionary() {
   /* state controllers */
   const [inputValue, setInputValue] = useState("");
 
+  /* toast function */
+  const ToastMsg = ({ newInputValue }) => (
+    <>
+      Copied <span className='copiedItem'>{newInputValue}</span> to the
+      clipboard
+    </>
+  );
+
+  const notify = (newInputValue) =>
+    toast(<ToastMsg newInputValue={newInputValue} />);
+
   /* filter options */
   const filterOptions = createFilterOptions({
     matchFrom: "any",
@@ -97,7 +105,9 @@ export default function AutoDictionary() {
         onInputChange={(event, newInputValue) => {
           navigator.clipboard.writeText(newInputValue);
           setInputValue(newInputValue);
-          notify();
+          if (event.type === "click" || event.type === "keydown") {
+            notify(newInputValue);
+          }
         }}
         /* filter options */
         filterOptions={filterOptions}
@@ -129,7 +139,10 @@ export default function AutoDictionary() {
         variant='contained'
         style={{ borderRadius: "0 3px 3px 0" }}
         onClick={() => {
-          navigator.clipboard.writeText(inputValue);
+          if (inputValue !== '') {
+            navigator.clipboard.writeText(inputValue);
+            notify(inputValue);
+          }
         }}
       >
         <i className='far fa-copy'></i>

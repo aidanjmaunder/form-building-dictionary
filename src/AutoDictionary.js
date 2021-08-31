@@ -105,8 +105,10 @@ export default function AutoDictionary() {
         onInputChange={(event, newInputValue) => {
           navigator.clipboard.writeText(newInputValue);
           setInputValue(newInputValue);
+        }}
+        onChange={(event, newInputValue) => {
           if (event.type === "click" || event.type === "keydown") {
-            notify(newInputValue);
+            notify(newInputValue.Fieldname);
           }
         }}
         /* filter options */
